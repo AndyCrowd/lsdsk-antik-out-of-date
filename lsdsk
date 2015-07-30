@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#
+#License: GPL2
+#
+#Author: Andy Crowd
+#Tested in Arch Linux
+#Search in *.desktop for "Categories" and "Exec"
+#
+
+[[ ! -z "$1" ]] && find /usr/share/applications/ ~/.local/share/applications/ -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
+if(index($1,"Categories"))A=$2;
+if(index($1,"Name") && ! index($1,"["))D=$2;
+if(index($1,"Exec") == 1)C=substr($0,index($0,"Exec")+5);
+}END{
+  split(C,B,"%");
+  gsub(/[^*]*\//,"",Fil);
+if( ! A){E=D}else{E=A};
+ Z=B[1]" ¤ "E" ¤ "Fil;
+if(match(tolower(Z),tolower(Seek)) ){ 
+ print Z;};}' "{}" \;
+
+[[ -z "$1" ]] && find /usr/share/applications/ ~/.local/share/applications/ -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
+if(index($1,"Categories"))A=$2;
+if(index($1,"Name") && ! index($1,"["))D=$2;
+if(index($1,"Exec") == 1)C=substr($0,index($0,"Exec")+5);
+}END{
+  split(C,B,"%");
+  gsub(/[^*]*\//,"",Fil);
+if(index($1,"Name")) D=$2;
+if( ! A){E=D}else{E=A};
+ Z=B[1]" ¤ "E" ¤ "Fil;
+ print Z;}' "{}" \;

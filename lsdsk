@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 1.0.0-1
+##Version 1.0.1-1
 #
 #License: GPL2
 #
@@ -7,27 +7,47 @@
 #Tested in Arch Linux
 #Search in *.desktop for "Categories" and "Exec"
 #
+DskPath[0]="/usr/share/applications/"
+DskPath[1]="$HOME/.local/share/applications/"
 
-[[ ! -z "$1" ]] && find /usr/share/applications/ ~/.local/share/applications/ -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
-if(index($1,"Categories"))A=$2;
-if(index($1,"Name") && ! index($1,"["))D=$2;
-if(index($1,"Exec") == 1)C=substr($0,index($0,"Exec")+5);
+Count=0
+
+while [ $Count -lt ${#DskPath[@]} ];do
+
+if [ ! -z "$1" ] && [ ! -f "${DskPath[Count]}" ];
+  then 
+   find "${DskPath[Count]}" -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
+if(index($1,"Categories"))Ctgr=$2;
+if(index($1,"Name") && ! index($1,"["))inNm=$2;
+if(index($1,"Exec") == 1)inExc=substr($0,index($0,"Exec")+5);
 }END{
-  split(C,B,"%");
+  split(inExc,Arr,"%");
   gsub(/[^*]*\//,"",Fil);
-if( ! A){E=D}else{E=A};
- Z=B[1]" ¤ "E" ¤ "Fil;
+if( ! Ctg){E=inNm}else{E=Ctgr};
+ Z=Arr[1]" ¤ "E" ¤ "Fil;
 if(match(tolower(Z),tolower(Seek)) ){ 
  print Z;};}' "{}" \;
-
-[[ -z "$1" ]] && find /usr/share/applications/ ~/.local/share/applications/ -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
-if(index($1,"Categories"))A=$2;
-if(index($1,"Name") && ! index($1,"["))D=$2;
-if(index($1,"Exec") == 1)C=substr($0,index($0,"Exec")+5);
+fi;
+if [[ -z "$1" && ! -f "${DskPath[Count]}" ]];
+  then 
+   find "${DskPath[Count]}" -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
+if(index($1,"Categories"))
+ Ctgr=$2;
+if(index($1,"Name") && ! index($1,"["))
+ inNm=$2;
+if(index($1,"Exec") == 1)
+ inExc=substr($0,index($0,"Exec")+5);
 }END{
-  split(C,B,"%");
+  split(inExc,Arr,"%");
   gsub(/[^*]*\//,"",Fil);
-if(index($1,"Name")) D=$2;
-if( ! A){E=D}else{E=A};
- Z=B[1]" ¤ "E" ¤ "Fil;
+if(index($1,"Name"))
+ inNm=$2;
+if( ! Ctgr)
+ {E=inNm}
+  else
+ {E=Ctgr};
+ Z=Arr[1]" ¤ "E" ¤ "Fil;
  print Z;}' "{}" \;
+fi;
+Count=$((Count+1))
+done

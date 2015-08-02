@@ -35,7 +35,7 @@ if(index($1,"Exec") == 1)inExc=substr($0,index($0,"Exec")+5);
 }END{
   split(inExc,Arr,"%");
   gsub(/[^*]*\//,"",Fil);
-if( ! Ctg){E=inNm}else{E=Ctgr};
+if( Ctg){E=inNm}else{E=Ctgr};
  Z=Arr[1]" ¤ "E" ¤ "Fil;
 if(match(tolower(Z),tolower(Seek)) ){ 
  print Z;};}' "{}" \;
@@ -54,7 +54,7 @@ if(index($1,"Exec") == 1)
 }END{
   split(inExc,Arr,"%");
   gsub(/[^*]*\//,"",Fil);
-if(! Ctgr)
+if(Ctgr)
  {E=inNm}
   else
  {E=Ctgr};

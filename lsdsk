@@ -20,9 +20,9 @@ Count=0
 
 while [ $Count -lt ${#DskPath[@]} ];do
 
-[[ ! -f "${DskPath[Count]}"  ]] && printf "\e[1;36m ${DskPath[Count]} \e[0m \n";
+[[ ! -d "${DskPath[Count]}"  ]] && printf "\e[1;36m ${DskPath[Count]} \e[0m \n";
 
-if [ ! -z "$1" ] && [ ! -f "${DskPath[Count]}" ];
+if [ ! -z "$1" ] && [ ! -d "${DskPath[Count]}" ];
   then 
    find "${DskPath[Count]}" -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
 if(index($1,"Categories"))Ctgr=$2;
@@ -36,7 +36,7 @@ if( ! Ctg){E=inNm}else{E=Ctgr};
 if(match(tolower(Z),tolower(Seek)) ){ 
  print Z;};}' "{}" \;
 fi;
-if [[ -z "$1" && ! -f "${DskPath[Count]}" ]];
+if [[ -z "$1" && ! -d "${DskPath[Count]}" ]];
   then 
    find "${DskPath[Count]}" -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
 if(index($1,"Categories"))

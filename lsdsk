@@ -10,9 +10,17 @@
 DskPath[0]="/usr/share/applications/"
 DskPath[1]="$HOME/.local/share/applications/"
 
+DskPath[2]="/etc/xdg/autostart/"
+DskPath[3]="$HOME/.config/autostart/"
+
+DskPath[4]="$XDG_CONFIG_DIRS/autostart/"
+DskPath[5]="$XDG_CONFIG_HOME/autostart/"
+
 Count=0
 
 while [ $Count -lt ${#DskPath[@]} ];do
+
+[[ ! -f "${DskPath[Count]}"  ]] && printf "\e[1;36m ${DskPath[Count]} \e[0m \n";
 
 if [ ! -z "$1" ] && [ ! -f "${DskPath[Count]}" ];
   then 

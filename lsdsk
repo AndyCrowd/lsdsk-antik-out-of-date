@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 1.0.1-2
+##Version 1.0.1-3
 #
 #License: GPL2
 #
@@ -18,9 +18,11 @@ DskPath[4]="$HOME/.config/autostart/"
 DskPath[5]="$XDG_CONFIG_DIRS/autostart/"
 DskPath[6]="$XDG_CONFIG_HOME/autostart/"
 
+DskPath[7]="/usr/share/gnome/autostart/"
+
 #### Search with no subdirs
-MaxDepth[7]="-maxdepth 1"
-DskPath[7]="$HOME/Desktop"
+MaxDepth[8]="-maxdepth 1"
+DskPath[8]="$HOME/Desktop"
 ####
 
 Count=0

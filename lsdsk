@@ -25,6 +25,11 @@ MaxDepth[8]="-maxdepth 1"
 DskPath[8]="$HOME/Desktop"
 ####
 
+DskPath[9]="/usr/etc/xdg/autostart/"
+DskPath[10]="/usr/share/mimelnk/application/"
+DskPath[11]="/usr/share/mimelnk/chemical/"
+DskPath[12]="/usr/lib/libreoffice/share/xdg/"
+
 Count=0
 
 while [ $Count -lt ${#DskPath[@]} ];do

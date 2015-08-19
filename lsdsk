@@ -65,7 +65,7 @@ if(index($0,"Categories") == 1) Ctgr=$2;
 if(index($0,"Name=")      == 1) inNm=$2;
 if(index($0,"Exec=")      == 1) inExc=$2;
 if(index($0,"Comment=" )  == 1) inComment=$2;
-if(index($0,"Command=")   == 1) inCmd=$2 ;
+if(index($0,"Command")    == 1) inCmd=$2 ;
 }END{
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};

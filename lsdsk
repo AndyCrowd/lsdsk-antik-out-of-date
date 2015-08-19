@@ -58,8 +58,6 @@ if(! E)E=inComment;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
 
 else
-#fi;if [[ -z "$1" && -d "${DskPath[Count]}" ]];then 
-
    find "${DskPath[Count]}" -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
 if(index($0,"Categories") == 1) Ctgr=$2;
 if(index($0,"Name=")      == 1) inNm=$2;

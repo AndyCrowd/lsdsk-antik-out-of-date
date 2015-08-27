@@ -37,30 +37,32 @@ DskPath[17]="/usr/share/apps/kdm/programs/"
 DskPath[18]="/usr/share/mate/wm-properties/"
 
 for fdPath in "${DskPath[@]}";do
+
 if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
  then
   printf "\e[1;36m ${fdPath} \e[0m \n";
    if [ ! -z "$1" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
      find "${fdPath}" ${MaxDepth[Count]}  -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
-if(index($0,"Categories") == 1) Ctgr=$2;
-if(index($0,"Name=")      == 1) inNm=$2;
-if(index($0,"Comment=")   == 1) inComment=$2;
-if(index($0,"Command=")   == 1) inCmd=$2 ;
-if(index($0,"Exec=")      == 1) inExc=$2;
+if(index($0,"Categories") == 1) Ctgr=substr($0,index($0,"=")+1);
+if(index($0,"Name=")      == 1) inNm=substr($0,index($0,"=")+1);
+if(index($0,"Comment=")   == 1) inComment=substr($0,index($0,"=")+1);
+if(index($0,"Command")    == 1) inCmd=substr($0,index($0,"=")+1) ;
+if(index($0,"Exec=")      == 1) inExc=substr($0,index($0,"=")+1);
 }END{
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
-Z=CmdLine" ¤ "E" ¤ "Fil;
+ Z=CmdLine" ¤ "E" ¤ "Fil;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
-  else
-   find "${fdPath}" -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
-if(index($0,"Categories") == 1) Ctgr=$2;
-if(index($0,"Name=")      == 1) inNm=$2;
-if(index($0,"Exec=")      == 1) inExc=$2;
-if(index($0,"Comment=")   == 1) inComment=$2;
-if(index($0,"Command=")   == 1) inCmd=$2 ;
+    
+    else
+[[ -d "${fdPath}"  || -f "${fdPath}" ]] && find "${fdPath}" -iname "*.desktop" -exec awk -v Fil="{}"  -F"=" '//{
+if(index($0,"Categories") == 1) Ctgr=substr($0,index($0,"=")+1);
+if(index($0,"Name=")      == 1) inNm=substr($0,index($0,"=")+1);
+if(index($0,"Exec=")      == 1) inExc=substr($0,index($0,"=")+1);
+if(index($0,"Comment=")   == 1) inComment=substr($0,index($0,"=")+1);
+if(index($0,"Command=")   == 1) inCmd=substr($0,index($0,"=")+1) ;
 }END{
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
@@ -69,4 +71,5 @@ if(! E)E=inComment;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi
+
 done

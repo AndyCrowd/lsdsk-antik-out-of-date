@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 2.0.1-1
+##Version 2.0.1-2
 #
 #License: GPL2
 #
@@ -20,7 +20,9 @@ DskPath[6]="$XDG_CONFIG_HOME/autostart/"
 
 DskPath[7]="/usr/share/gnome/autostart/"
 
-#### Search with no subdirs
+#### Search with no subdirs # This is an example
+## !!!!  some of the desktop environments can create the
+## "Desktop" destination with another name, you must modify the script to fit your needs !!!!!
 MaxDepth[8]="-maxdepth 1"
 DskPath[8]="$HOME/Desktop"
 ####
@@ -35,6 +37,8 @@ DskPath[15]="/usr/share/gdm/greeter/autostart/"
 DskPath[16]="/usr/share/wayland-sessions/"
 DskPath[17]="/usr/share/apps/kdm/programs/"
 DskPath[18]="/usr/share/mate/wm-properties/"
+
+DskPath[19]="/usr/share/wayland-sessions/""
 
 for fdPath in "${DskPath[@]}";do
 

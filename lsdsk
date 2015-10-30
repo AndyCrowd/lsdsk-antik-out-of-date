@@ -38,7 +38,7 @@ DskPath[16]="/usr/share/wayland-sessions/"
 DskPath[17]="/usr/share/apps/kdm/programs/"
 DskPath[18]="/usr/share/mate/wm-properties/"
 
-DskPath[19]="/usr/share/wayland-sessions/""
+DskPath[19]="/usr/share/wayland-sessions/"
 
 for fdPath in "${DskPath[@]}";do
 

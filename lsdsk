@@ -45,6 +45,8 @@ DskPath[20]="/usr/share/apps/solid/actions/"
 DskPath[21]="/usr/share/kde4/apps/solid/actions/"
 DskPath[22]="/usr/share/kde5/apps/solid/actions/"
 
+DskPath[23]="/usr/share/xfce4/helpers/"
+
 for fdPath in "${DskPath[@]}";do
 
 if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
@@ -53,12 +55,16 @@ if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
    if [ ! -z "$1" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
      find "${fdPath}" ${MaxDepth[Count]}  -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
-if(index($0,"Categories") == 1) Ctgr=substr($0,index($0,"=")+1);
-if(index($0,"Name=")      == 1) inNm=substr($0,index($0,"=")+1);
-if(index($0,"Comment=")   == 1) inComment=substr($0,index($0,"=")+1);
-if(index($0,"Command")    == 1) inCmd=substr($0,index($0,"=")+1) ;
-if(index($0,"Exec=")      == 1) inExc=substr($0,index($0,"=")+1);
-}END{
+if(index($0,"Categories=") >= 1) Ctgr=substr($0,index($0,"=")+1);
+if(index($0,"Name=")       == 1) inNm=substr($0,index($0,"=")+1);
+if(index($0,"Comment=")    == 1) inComment=substr($0,index($0,"=")+1);
+if(index($0,"Command")     == 1) inCmd=substr($0,index($0,"=")+1) ;
+if(index($0,"Exec=")       == 1) inExc=substr($0,index($0,"=")+1);
+
+if(index($0,"Category=") >= 1) Ctgr=substr($0,index($0,"=")+1);
+if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
+
+     }END{
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
@@ -72,11 +78,15 @@ if(index($0,"Name=")      == 1) inNm=substr($0,index($0,"=")+1);
 if(index($0,"Exec=")      == 1) inExc=substr($0,index($0,"=")+1);
 if(index($0,"Comment=")   == 1) inComment=substr($0,index($0,"=")+1);
 if(index($0,"Command=")   == 1) inCmd=substr($0,index($0,"=")+1) ;
+
+if(index($0,"Category=") >= 1) Ctgr=substr($0,index($0,"=")+1);
+if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
+
 }END{
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" ¤ "E" ¤ "Fil;
+ Z=CmdLine" ¤ "E" ¤ "Fil" ¤ "XFCEb;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi

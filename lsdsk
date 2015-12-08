@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 2.0.1-5
+##Version 2.0.2-1
 #
 #License: GPL2
 #
@@ -42,10 +42,12 @@ DskPath[19]="/usr/share/wayland-sessions/"
 
 DskPath[20]="/usr/share/apps/solid/actions/"
 
-DskPath[21]="/usr/share/kde4/apps/solid/actions/"
+DskPath[21]="/usr/share/xfce4/helpers/"
+### /kde/ and /kde6/ are not actual, it might be the folders names of the future or past
+DskPath[22]="/usr/share/kde/apps/solid/actions/"
+DskPath[23]="/usr/share/kde4/apps/solid/actions/"
 DskPath[22]="/usr/share/kde5/apps/solid/actions/"
-
-DskPath[23]="/usr/share/xfce4/helpers/"
+DskPath[23]="/usr/share/kde6/apps/solid/actions/"
 
 for fdPath in "${DskPath[@]}";do
 
@@ -54,7 +56,7 @@ if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
   printf "\e[1;36m ${fdPath} \e[0m \n";
    if [ ! -z "$1" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
-     find "${fdPath}" ${MaxDepth[Count]}  -iname "*.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
+     find "${fdPath}" ${MaxDepth[Count]}  -iname "*\.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
 if(index($0,"Categories=") >= 1) Ctgr=substr($0,index($0,"=")+1);
 if(index($0,"Name=")       == 1) inNm=substr($0,index($0,"=")+1);
 if(index($0,"Comment=")    == 1) inComment=substr($0,index($0,"=")+1);

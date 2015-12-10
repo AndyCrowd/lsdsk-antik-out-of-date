@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 2.0.2-1
+##Version 2.0.2-2
 #
 #License: GPL2
 #
@@ -48,6 +48,8 @@ DskPath[22]="/usr/share/kde/apps/solid/actions/"
 DskPath[23]="/usr/share/kde4/apps/solid/actions/"
 DskPath[22]="/usr/share/kde5/apps/solid/actions/"
 DskPath[23]="/usr/share/kde6/apps/solid/actions/"
+
+DskPath[24]="/usr/share/xgreeters/"
 
 for fdPath in "${DskPath[@]}";do
 

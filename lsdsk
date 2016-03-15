@@ -157,7 +157,7 @@ if [[  ! -z "$2"    ]];then
 	Var="$2"
 	SearchContentOfVariable
 else
-	echo "Error, parameter to --var is missingi
+	echo "Error, parameter to --var is missing
 example: --var MimeType"
 fi	
 ;;

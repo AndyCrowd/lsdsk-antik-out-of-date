@@ -126,7 +126,6 @@ if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
   printf "\e[1;36m ${fdPath} \e[0m \n";
    if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
-
 	    grep -i ^"$Var"  -H -R --include \*.desktop "${fdPath}" 
    fi;
 fi
@@ -142,14 +141,16 @@ case "$1" in
 	echo "OPTIONS
 --help : shows this help message
 --var variable : search for variable in the *.desktop
---seek-to-dump | --sstd : search in  /  and show all content 
+--seek-to-dump | --sstd : search in  /  and show all content (may need root rights)
 Usage:
 List content with default options:
  lsdsk
 Search only for specific text in default output:
  lsdsk gtk
  lsdsk game
-"
+Use --var option:
+--var Name=
+--var "Name\[zn_CN\]"
 	;;
 --var )
 if [[  ! -z "$2"    ]];then  

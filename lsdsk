@@ -91,7 +91,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Â¤ "E" Â¤ "Fil;
+ Z=CmdLine" Ã‚Â¤ "E" Ã‚Â¤ "Fil;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
     
     else
@@ -109,7 +109,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Â¤ "E" Â¤ "Fil" Â¤ "XFCEb;
+ Z=CmdLine" Ã‚Â¤ "E" Ã‚Â¤ "Fil" Ã‚Â¤ "XFCEb;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi
@@ -126,7 +126,7 @@ if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
   printf "\e[1;36m ${fdPath} \e[0m \n";
    if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
-	    grep -i ^"$Var"  -H -R --include \*.desktop "${fdPath}" 
+	    grep -e ^"$Var" $Additional -H -R --include \*.desktop "${fdPath}" 
    fi;
 fi
 
@@ -148,18 +148,23 @@ List content with default options:
 Search only for specific text in default output:
  lsdsk gtk
  lsdsk game
-Use --var option:
+Use --var option (supports grep syntax):
 --var Name=
---var "Name\[zn_CN\]"
+--var 'Name\[zn_CN\]'"
 	;;
 --var )
 if [[  ! -z "$2"    ]];then  
 	Var="$2"
+ if [[ "$#" -gt 2  ]];then 
+OptionsToGrep=($@);
+Additional="${OptionsToGrep[@]:2}"  ;
+ fi;
 	SearchContentOfVariable
 else
 	echo "Error, parameter to --var is missing
 example: --var MimeType"
-fi	
+ fi	
+
 ;;
 --seek-to-dump | --sstd ) 
 	grep -i ^""  -H -R --include \*.desktop "/"

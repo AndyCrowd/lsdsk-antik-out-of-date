@@ -139,7 +139,7 @@ case "$1" in
 
 --help ) 
 	echo "OPTIONS
---help : shows this help message
+--help : show this help message
 --var variable : search for variable in the *.desktop
 --seek-to-dump | --sstd : search in  /  and show all content (may need root rights)
 Usage:

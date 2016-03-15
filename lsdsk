@@ -60,19 +60,29 @@ DskPath[29]="/usr/share/Thunar/sendto/"
 DskPath[30]="/usr/share/gdm/autostart/"
 DskPath[31]="/usr/share/mga/"
 
+
+One=$1
+Two=$2
+Three=$3
+
+ListDefault(){
+
 for fdPath in "${DskPath[@]}";do
 
 if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
  then
   printf "\e[1;36m ${fdPath} \e[0m \n";
-   if [ ! -z "$1" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
-    then 
-     find "${fdPath}" ${MaxDepth[Count]}  -iname "*\.desktop" -exec awk -v Fil="{}"  -v Seek="$1" -F"=" '//{
+   if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
+    then
+
+     find "${fdPath}" ${MaxDepth[Count]}  -iname "*\.desktop" -exec awk -v Fil="{}"  -v Seek="$One" -F"=" '//{
 if(index($0,"Categories=") >= 1) Ctgr=substr($0,index($0,"=")+1);
 if(index($0,"Name=")       == 1) inNm=substr($0,index($0,"=")+1);
 if(index($0,"Comment=")    == 1) inComment=substr($0,index($0,"=")+1);
 if(index($0,"Command")     == 1) inCmd=substr($0,index($0,"=")+1) ;
+if(index($0,"Module=")     == 1) inExc=substr($0,index($0,"=")+1);
 if(index($0,"Exec=")       == 1) inExc=substr($0,index($0,"=")+1);
+
 
 if(index($0,"Category=") >= 1) Ctgr=substr($0,index($0,"=")+1);
 if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
@@ -81,7 +91,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" ¤ "E" ¤ "Fil;
+ Z=CmdLine" Â¤ "E" Â¤ "Fil;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
     
     else
@@ -99,9 +109,62 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" ¤ "E" ¤ "Fil" ¤ "XFCEb;
+ Z=CmdLine" Â¤ "E" Â¤ "Fil" Â¤ "XFCEb;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi
 
 done
+}
+###################  Search specific ####
+
+SearchContentOfVariable(){
+for fdPath in "${DskPath[@]}";do
+
+if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
+ then
+  printf "\e[1;36m ${fdPath} \e[0m \n";
+   if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
+    then 
+
+	    grep -i ^"$Var"  -H -R --include \*.desktop "${fdPath}" 
+   fi;
+fi
+
+done
+}
+###################
+###################
+
+case "$1" in
+
+--help ) 
+	echo "OPTIONS
+--help : shows this help message
+--var variable : search for variable in the *.desktop
+--seek-to-dump | --sstd : search in  /  and show all content 
+Usage:
+List content with default options:
+ lsdsk
+Search only for specific text in default output:
+ lsdsk gtk
+ lsdsk game
+"
+	;;
+--var )
+if [[  ! -z "$2"    ]];then  
+	Var="$2"
+	SearchContentOfVariable
+else
+	echo "Error, parameter to --var is missingi
+example: --var MimeType"
+fi	
+;;
+--seek-to-dump | --sstd ) 
+	grep -i ^""  -H -R --include \*.desktop "/"
+	;;
+* ) 
+	ListDefault
+	;;
+
+esac

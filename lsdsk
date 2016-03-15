@@ -1,5 +1,5 @@
 #!/bin/bash
-##Version 2.0.2-2
+##Version 2.0.2-3
 #
 #License: GPL
 #
@@ -50,6 +50,15 @@ DskPath[22]="/usr/share/kde5/apps/solid/actions/"
 DskPath[23]="/usr/share/kde6/apps/solid/actions/"
 
 DskPath[24]="/usr/share/xgreeters/"
+
+DskPath[25]="/usr/share/dist/desktop-files/default/"
+DskPath[26]="/usr/share/parole/"
+DskPath[27]="/usr/share/mimelnk/application/"
+DskPath[28]="/usr/share/gnome/autostart/"
+
+DskPath[29]="/usr/share/Thunar/sendto/"
+DskPath[30]="/usr/share/gdm/autostart/"
+DskPath[31]="/usr/share/mga/"
 
 for fdPath in "${DskPath[@]}";do
 

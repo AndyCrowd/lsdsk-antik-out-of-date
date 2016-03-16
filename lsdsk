@@ -203,7 +203,14 @@ esac
     fi;
 fi
 
+
 done
+if [[ "$Opts"  == "sys-uniq" ]];then 
+#DskPath=($(find "/usr/" "/etc/" "/opt"  -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq))
+find "/usr/" "/etc/" "/opt"  -type f -name "*\.desktop" -exec grep ^ "{}"  \; | cut -d= -f1 | grep -v "\[" | sort | uniq
+fi
+
+
 }
 ####################
 RawView(){
@@ -245,7 +252,8 @@ case "$1" in
 --dump-all | --da : search in  /  and show raw content (may need root rights)
 --dump-default-path | --ddp : search and dump content from default path
 --show-uniq-def | --sud : show all uniq base variable names found in default path
---find-uniq-path | --fup : find uniq path, without alternative path it starts search from /
+--show-sys-uniq | --ssu : show uniq variable names found in sys path (/usr /etc /opt)
+--find-uniq-path | --fup : find path that contain *.desktop files, default path is /
 --all-sys-path | --asc : scanning only in /etc /usr /opt , supports default options
 --scan-root | --sr : scanning in / (may need root rights)
 Usage:
@@ -257,15 +265,17 @@ Search only for specific text in default output:
 Use --var option (supports grep syntax):
 --var Name=
 --var 'Name\[zn_CN\]'
-Scan for all *.desktop files in sys path
+Scan for all *.desktop files in sys path (/usr /etc /opt)
 --asc 
---asc gtk"
-
+--asc gtk
 Use --find-uniq-path or --fup 
 --fup 
 --fup /usr /etc
+"
 	;;
 --var )
+	ReCreateDskPath
+
 if [[  ! -z "$2"    ]];then  
 	Var="$2"
  if [[ "$#" -gt 2  ]];then 
@@ -285,35 +295,48 @@ example: --var MimeType"
 	;;
 --dump-default-path | --ddp )
 	Opts="ddp"
-       	SearchContentOfVariable
+  ReCreateDskPath
+     	SearchContentOfVariable
 
 	;;
 --show-uniq-def | --sud )
 	Opts="sud"
-       	SearchContentOfVariable
+ ReCreateDskPath
+      	SearchContentOfVariable
 	;;
 --show-uniq-only | --suo )
 OffPrint="yes"
 Opts=suo
+ReCreateDskPath
+
 RawView
 	;;	
+--show-sys-uniq | --ssu )
+Opts="sys-uniq"
+	SearchContentOfVariable
+
+	;;
 --find-uniq-path | --fup )
 
 if [[ ! -z $Two ]]; then  
 	 for StartCmdLine in $@;
  	 do
+
  if [[ -d "$StartCmdLine" ]]; then
   InPath="$StartCmdLine"
  fi
+
  find "$InPath" -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
 
  if [[ "$InPath" == "/" ]];then 
   exit
  fi
+
 done
 else
  find / -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
 fi
+
 ;;
 --all-sys-path | --asc)
 Opts="scan-sys-path"
@@ -325,8 +348,10 @@ Opts="scan-root"
 	ReCreateDskPath
 	ListDefault
 	;;
+
 * ) 
 	ReCreateDskPath
 	ListDefault
 	;;
+
 esac

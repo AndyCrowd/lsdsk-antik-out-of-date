@@ -205,10 +205,15 @@ fi
 
 
 done
-if [[ "$Opts"  == "sys-uniq" ]];then 
+case  "$Opts" in
+	sys-uniq)
 #DskPath=($(find "/usr/" "/etc/" "/opt"  -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq))
 find "/usr/" "/etc/" "/opt"  -type f -name "*\.desktop" -exec grep ^ "{}"  \; | cut -d= -f1 | grep -v "\[" | sort | uniq
-fi
+;;
+var-sys)
+	grep -e ^"$Var" $Additional -H -R --include \*.desktop /usr/ /etc /opt
+	;;
+esac
 
 
 }
@@ -282,13 +287,28 @@ if [[  ! -z "$2"    ]];then
 OptionsToGrep=($@);
 Additional="${OptionsToGrep[@]:2}"  ;
  fi;
-	Opts="da"
+	Opts="var"
 	SearchContentOfVariable
 else
 	echo "Error, parameter to --var is missing
 example: --var MimeType"
  fi	
+ ;;
+ --var-sys | --vs)
+#	ReCreateDskPath
 
+if [[  ! -z "$2"    ]];then  
+	Var="$2"
+ if [[ "$#" -gt 2  ]];then 
+OptionsToGrep=($@);
+Additional="${OptionsToGrep[@]:2}"  ;
+ fi;
+	Opts="var-sys"
+	SearchContentOfVariable
+else
+	echo "Error, parameter to --var-sys is missing
+example: --var MimeType"
+ fi	
 ;;
 --dump-all | --da ) 
 	grep -i ^ -H -R --include \*.desktop "/"

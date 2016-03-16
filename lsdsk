@@ -7,74 +7,132 @@
 #Tested in Arch Linux
 #Search in *.desktop for "Categories" and "Exec"
 #
-DskPath[0]="/usr/share/applications/"
-DskPath[1]="$HOME/.local/share/applications/"
+ADskPath[0]="/usr/share/applications/"
+ADskPath[8]="$HOME/.local/share/applications/"
 
-DskPath[2]="/usr/local/share/applications"
+ADskPath[2]="/usr/local/share/applications"
 
-DskPath[3]="/etc/xdg/autostart/"
-DskPath[4]="$HOME/.config/autostart/"
+ADskPath[3]="/etc/xdg/autostart/"
+ADskPath[4]="$HOME/.config/autostart/"
 
-DskPath[5]="$XDG_CONFIG_DIRS/autostart/"
-DskPath[6]="$XDG_CONFIG_HOME/autostart/"
+ADskPath[5]="$XDG_CONFIG_DIRS/autostart/"
+ADskPath[6]="$XDG_CONFIG_HOME/autostart/"
 
-DskPath[7]="/usr/share/gnome/autostart/"
+ADskPath[7]="/usr/share/gnome/autostart/"
 
 #### Search with no subdirs # This is an example
 ## !!!!  some of the desktop environments can create the
 ## "Desktop" destination with another name, you must modify the script to fit your needs !!!!!
-MaxDepth[8]="-maxdepth 1"
-DskPath[8]="$HOME/Desktop"
+MaxDepth[1]="-maxdepth 1"
+ADskPath[1]="$HOME/Desktop"
 ####
 
-DskPath[9]="/usr/etc/xdg/autostart/"
-DskPath[10]="/usr/share/mimelnk/application/"
-DskPath[11]="/usr/share/mimelnk/chemical/"
-DskPath[12]="/usr/lib/libreoffice/share/xdg/"
-DskPath[13]="/usr/share/xsessions/"
-DskPath[14]="/usr/share/apps/kdm/sessions/"
-DskPath[15]="/usr/share/gdm/greeter/autostart/"
-DskPath[16]="/usr/share/wayland-sessions/"
-DskPath[17]="/usr/share/apps/kdm/programs/"
-DskPath[18]="/usr/share/mate/wm-properties/"
+ADskPath[9]="/usr/etc/xdg/autostart/"
+ADskPath[10]="/usr/share/mimelnk/application/"
+ADskPath[11]="/usr/share/mimelnk/chemical/"
+ADskPath[12]="/usr/lib/libreoffice/share/xdg/"
+ADskPath[13]="/usr/share/xsessions/"
+ADskPath[14]="/usr/share/apps/kdm/sessions/"
+ADskPath[15]="/usr/share/gdm/greeter/autostart/"
+ADskPath[16]="/usr/share/wayland-sessions/"
+ADskPath[17]="/usr/share/apps/kdm/programs/"
+ADskPath[18]="/usr/share/mate/wm-properties/"
 
-DskPath[19]="/usr/share/wayland-sessions/"
+ADskPath[19]="/usr/share/wayland-sessions/"
 
-DskPath[20]="/usr/share/apps/solid/actions/"
+ADskPath[20]="/usr/share/apps/solid/actions/"
 
-DskPath[21]="/usr/share/xfce4/helpers/"
+ADskPath[21]="/usr/share/xfce4/helpers/"
 ### /kde/ and /kde6/ are not actual, it might be the folders names of the future or past
-DskPath[22]="/usr/share/kde*"
-DskPath[23]="/usr/share/kde4/apps/solid/actions/"
-DskPath[22]="/usr/share/kde5/apps/solid/actions/"
-DskPath[23]="/usr/share/kde6/apps/solid/actions/"
+ADskPath[22]="/usr/share/kde*"
+ADskPath[23]="/usr/share/kde4/apps/solid/actions/"
+ADskPath[22]="/usr/share/kde5/apps/solid/actions/"
+ADskPath[23]="/usr/share/kde6/apps/solid/actions/"
 
-DskPath[24]="/usr/share/xgreeters/"
+ADskPath[24]="/usr/share/xgreeters/"
 
-DskPath[25]="/usr/share/dist/desktop-files/default/"
-DskPath[26]="/usr/share/parole/"
-DskPath[27]="/usr/share/mimelnk/application/"
-DskPath[28]="/usr/share/gnome/autostart/"
+ADskPath[25]="/usr/share/dist/desktop-files/default/"
+ADskPath[26]="/usr/share/parole/"
+ADskPath[27]="/usr/share/mimelnk/application/"
+ADskPath[28]="/usr/share/gnome/autostart/"
 
-DskPath[29]="/usr/share/Thunar/sendto/"
-DskPath[30]="/usr/share/gdm/autostart/"
-DskPath[31]="/usr/share/mga/"
-DskPath[32]="/lib/libreoffice/share/xdg/"
-DskPath[33]="/etc/dynamic/launchers/scanner/"
-DskPath[34]="/lib/gnome-settings-daemon*"
+ADskPath[29]="/usr/share/Thunar/sendto/"
+ADskPath[30]="/usr/share/gdm/autostart/"
+ADskPath[31]="/usr/share/mga/"
+ADskPath[32]="/lib/libreoffice/share/xdg/"
+ADskPath[33]="/etc/dynamic/launchers/scanner/"
+ADskPath[34]="/lib/gnome-settings-daemon*"
 
 One=$1
 Two=$2
 Three=$3
+OldIFS=IFS
+IFS="
+"
+NoEmpty=($(for InDskPath in ${ADskPath[@]};do echo $InDskPath|sort|uniq;done));
+#unset IFS
+#IFS=OldIFS
+#DskPath=(${NoEmpty[@]})
+
+ReCreateDskPath(){
+
+
+case "$Opts" in
+ 
+	OnlyNew1 )
+DskPath=($(if [[ ! -z $2 ]]; then  
+	 for StartCmdLine in $@;
+ 	 do
+
+ if [[ -d "$StartCmdLine" ]]; then
+  InPath="$StartCmdLine"
+ fi
+
+ find "$InPath" -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
+
+ if [[ "$InPath" == "/" ]];then 
+  exit
+ fi
+
+done
+else
+ find / -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
+fi))
+
+;;
+	scan-sys-path )
+		DskPath=($(find "/usr/"  "/etc/" "/opt/"  -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq))
+	
+	;;
+	scan-root )
+		echo "   "Please wait...
+		DskPath=($(find "/"  -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq))
+	
+	;;
+
+	*)
+	DskPath=(${NoEmpty[@]})
+;;
+esac
+
+}
+
 
 ListDefault(){
 
 for fdPath in "${DskPath[@]}";do
 
+	## Replace One with Two
+if [[ ! -z "$One"   ]];then
+ if [[ "$One" ==  "--all-sys-path" || "$One" == --asc ]];then
+	 One=$Two
+ fi
+fi
+
 if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
  then
   printf "\e[1;36m ${fdPath} \e[0m \n";
-   if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
+  if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then
 
      find "${fdPath}" ${MaxDepth[Count]}  -iname "*\.desktop" -exec awk -v Fil="{}"  -v Seek="$One" -F"=" '//{
@@ -93,7 +151,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Ãƒâ€šÃ‚Â¤ "E" Ãƒâ€šÃ‚Â¤ "Fil;
+ Z=CmdLine" Â¤ "E" Â¤ "Fil;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
     
     else
@@ -111,7 +169,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Ãƒâ€šÃ‚Â¤ "E" Ãƒâ€šÃ‚Â¤ "Fil" Ãƒâ€šÃ‚Â¤ "XFCEb;
+ Z=CmdLine" Â¤ "E" Â¤ "Fil" Â¤ "XFCEb;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi
@@ -119,13 +177,15 @@ fi
 done
 }
 ###################  Search specific ####
+OffPrint="no";
 
 SearchContentOfVariable(){
 for fdPath in "${DskPath[@]}";do
 
 if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
  then
-  printf "\e[1;36m ${fdPath} \e[0m \n";
+[[ "$OffPrint" == "no" ]] &&  printf "\e[1;36m ${fdPath} \e[0m \n";
+
    if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
 case $Opts in
@@ -145,6 +205,34 @@ fi
 
 done
 }
+####################
+RawView(){
+for fdPath in "${DskPath[@]}";do
+
+if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
+ then
+ [[ "$OffPrint" == "no" ]] &&  printf "\e[1;36m ${fdPath} \e[0m \n";
+
+   if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
+    then 
+[[ "$Opts" == "suo"  ]] && find "${fdPath}" -type f -name "*\.desktop" -exec grep ^ "{}" \;
+
+    fi;
+fi
+
+done | case $Opts in
+	suo )
+		grep = | cut -d= -f 1 | grep -v "\[" | sort | uniq
+		;;
+
+esac
+
+}
+
+###################
+
+
+
 ###################
 ###################
 
@@ -154,9 +242,12 @@ case "$1" in
 	echo "OPTIONS
 --help : show this help message
 --var variable : search for variable in the *.desktop
---dump-all | --da : search in  /  and show all content (may need root rights)
+--dump-all | --da : search in  /  and show raw content (may need root rights)
 --dump-default-path | --ddp : search and dump content from default path
 --show-uniq-def | --sud : show all uniq base variable names found in default path
+--find-uniq-path | --fup : find uniq path, without alternative path it starts search from /
+--all-sys-path | --asc : scanning only in /etc /usr /opt , supports default options
+--scan-root | --sr : scanning in / (may need root rights)
 Usage:
 List content with default options:
  lsdsk
@@ -165,7 +256,14 @@ Search only for specific text in default output:
  lsdsk game
 Use --var option (supports grep syntax):
 --var Name=
---var 'Name\[zn_CN\]'"
+--var 'Name\[zn_CN\]'
+Scan for all *.desktop files in sys path
+--asc 
+--asc gtk"
+
+Use --find-uniq-path or --fup 
+--fup 
+--fup /usr /etc
 	;;
 --var )
 if [[  ! -z "$2"    ]];then  
@@ -193,9 +291,47 @@ example: --var MimeType"
 --show-uniq-def | --sud )
 	Opts="sud"
        	SearchContentOfVariable
-
+	;;
+--show-uniq-only | --suo )
+OffPrint="yes"
+Opts=suo
+RawView
 	;;	
+--find-uniq-path | --fup )
+
+if [[ ! -z $Two ]]; then  
+	 for StartCmdLine in $@;
+ 	 do
+
+ if [[ -d "$StartCmdLine" ]]; then
+  InPath="$StartCmdLine"
+ fi
+
+ find "$InPath" -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
+
+ if [[ "$InPath" == "/" ]];then 
+  exit
+ fi
+
+done
+else
+ find / -type f -name "*\.desktop" | awk '{BaseName=$0; gsub(/[^.*]*\//,"",BaseName); print substr($0,0,index($0,BaseName)-1)}' | sort | uniq
+fi
+
+;;
+--all-sys-path | --asc)
+Opts="scan-sys-path"
+	ReCreateDskPath
+	ListDefault
+	;;
+--scan-root | --sr)
+Opts="scan-root"
+	ReCreateDskPath
+	ListDefault
+	;;
+
 * ) 
+	ReCreateDskPath
 	ListDefault
 	;;
 

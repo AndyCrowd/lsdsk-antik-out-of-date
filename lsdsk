@@ -44,7 +44,7 @@ DskPath[20]="/usr/share/apps/solid/actions/"
 
 DskPath[21]="/usr/share/xfce4/helpers/"
 ### /kde/ and /kde6/ are not actual, it might be the folders names of the future or past
-DskPath[22]="/usr/share/kde/apps/solid/actions/"
+DskPath[22]="/usr/share/kde*"
 DskPath[23]="/usr/share/kde4/apps/solid/actions/"
 DskPath[22]="/usr/share/kde5/apps/solid/actions/"
 DskPath[23]="/usr/share/kde6/apps/solid/actions/"
@@ -59,7 +59,9 @@ DskPath[28]="/usr/share/gnome/autostart/"
 DskPath[29]="/usr/share/Thunar/sendto/"
 DskPath[30]="/usr/share/gdm/autostart/"
 DskPath[31]="/usr/share/mga/"
-
+DskPath[32]="/lib/libreoffice/share/xdg/"
+DskPath[33]="/etc/dynamic/launchers/scanner/"
+DskPath[34]="/lib/gnome-settings-daemon*"
 
 One=$1
 Two=$2
@@ -91,7 +93,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Ã‚Â¤ "E" Ã‚Â¤ "Fil;
+ Z=CmdLine" Ãƒâ€šÃ‚Â¤ "E" Ãƒâ€šÃ‚Â¤ "Fil;
 if( index(tolower(Z),tolower(Seek)) && CmdLine  )  print Z;}' "{}" \;
     
     else
@@ -109,7 +111,7 @@ if(index($0,"X-XFCE-Binaries=") >= 1) inExc=substr($0,index($0,"=")+1);
 if(! Ctgr ){E=inNm}else{E=Ctgr};
 if(! inExc){CmdLine=inCmd}else{CmdLine=inExc};
 if(! E)E=inComment;
- Z=CmdLine" Ã‚Â¤ "E" Ã‚Â¤ "Fil" Ã‚Â¤ "XFCEb;
+ Z=CmdLine" Ãƒâ€šÃ‚Â¤ "E" Ãƒâ€šÃ‚Â¤ "Fil" Ãƒâ€šÃ‚Â¤ "XFCEb;
 if(CmdLine)print Z;}' "{}" \;
  fi;
 fi
@@ -126,8 +128,19 @@ if [[ -d "${DskPath[Count]}" || -f "${DskPath[Count]}"  ]];
   printf "\e[1;36m ${fdPath} \e[0m \n";
    if [ ! -z "$One" ] && [[ -d "${fdPath}"  || -f "${fdPath}" ]] ;
     then 
-	    grep -e ^"$Var" $Additional -H -R --include \*.desktop "${fdPath}" 
-   fi;
+case $Opts in
+	var )
+		grep -e ^"$Var" $Additional -H -R --include \*.desktop "${fdPath}" 
+		;;
+	ddp ) 
+                grep ^ -H -R --include \*.desktop "${fdPath}"
+		;;
+	sud )
+		grep = -R -h --include \*.desktop "${fdPath}" | cut -d= -f 1 | grep -v "\[" | sort | uniq
+		;;
+
+esac
+    fi;
 fi
 
 done
@@ -141,7 +154,9 @@ case "$1" in
 	echo "OPTIONS
 --help : show this help message
 --var variable : search for variable in the *.desktop
---seek-to-dump | --sstd : search in  /  and show all content (may need root rights)
+--dump-all | --da : search in  /  and show all content (may need root rights)
+--dump-default-path | --ddp : search and dump content from default path
+--show-uniq-def | --sud : show all uniq base variable names found in default path
 Usage:
 List content with default options:
  lsdsk
@@ -159,6 +174,7 @@ if [[  ! -z "$2"    ]];then
 OptionsToGrep=($@);
 Additional="${OptionsToGrep[@]:2}"  ;
  fi;
+	Opts="da"
 	SearchContentOfVariable
 else
 	echo "Error, parameter to --var is missing
@@ -166,9 +182,19 @@ example: --var MimeType"
  fi	
 
 ;;
---seek-to-dump | --sstd ) 
-	grep -i ^""  -H -R --include \*.desktop "/"
+--dump-all | --da ) 
+	grep -i ^ -H -R --include \*.desktop "/"
 	;;
+--dump-default-path | --ddp )
+	Opts="ddp"
+       	SearchContentOfVariable
+
+	;;
+--show-uniq-def | --sud )
+	Opts="sud"
+       	SearchContentOfVariable
+
+	;;	
 * ) 
 	ListDefault
 	;;
